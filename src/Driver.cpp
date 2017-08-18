@@ -654,8 +654,9 @@ pair<int, bool> Driver::readPacketInternal(uint8_t* buffer, int out_buffer_size)
         else
             return make_pair(packet_size, received_something);
 
-        if (internal_buffer_size == (size_t)MAX_PACKET_SIZE)
-            throw length_error("readPacket(): current packet too large for buffer");
+        if (internal_buffer_size >= (size_t)MAX_PACKET_SIZE)
+	    internal_buffer_size = 0;
+            //throw length_error("readPacket(): current packet too large for buffer");
     }
 
     // Never reached
