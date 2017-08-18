@@ -616,7 +616,7 @@ pair<int, bool> Driver::extractPacketFromInternalBuffer(uint8_t* buffer, int out
 pair<int, bool> Driver::readPacketInternal(uint8_t* buffer, int out_buffer_size)
 {
     if (out_buffer_size < MAX_PACKET_SIZE)
-        throw length_error("readPacket(): provided buffer too small (got " + boost::lexical_cast<string>(out_buffer_size) + ", expected at least " + boost::lexical_cast<string>(MAX_PACKET_SIZE) + ")");
+        throw length_error("readPacketInternal(): provided buffer too small (got " + boost::lexical_cast<string>(out_buffer_size) + ", expected at least " + boost::lexical_cast<string>(MAX_PACKET_SIZE) + ")");
 
     // How many packet bytes are there currently in +buffer+
     int packet_size = 0;
@@ -654,9 +654,11 @@ pair<int, bool> Driver::readPacketInternal(uint8_t* buffer, int out_buffer_size)
         else
             return make_pair(packet_size, received_something);
 
+	// Make the buffer behave internally like a ring buffer
+	// A driver should not throw at this stage.
         if (internal_buffer_size >= (size_t)MAX_PACKET_SIZE)
 	    internal_buffer_size = 0;
-            //throw length_error("readPacket(): current packet too large for buffer");
+            //throw length_error("readPacketInternal(): current packet too large for buffer");
     }
 
     // Never reached
